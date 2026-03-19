@@ -114,7 +114,16 @@ class Game {
                 this.pkg.damage(Math.floor(hit.speed * HAZARD_MULTIPLIER));
                 this._spawnParticles(this.pkg.x, this.pkg.y, '#ff2d55');
                 this._shake();
-            } else if (hit.type !== 'hazard') this._spawnParticles(this.pkg.x, this.pkg.y, '#ffffff');
+            } else if (hit.type === 'repair') {
+                this.pkg.heal(20);
+                this._spawnParticles(this.pkg.x, this.pkg.y, '#00ff99', 12);
+            } else if (hit.type === 'shatter') {
+                this.level.obstacles = this.level.obstacles.filter(o => o !== hit.obstacle);
+                this._spawnParticles(this.pkg.x, this.pkg.y, '#ffffff', 24);
+                this._shake();
+            } else if (hit.type !== 'hazard') {
+                this._spawnParticles(this.pkg.x, this.pkg.y, '#ffffff');
+            }
         }
 
         const { x, y, w, h } = this.level.destination;
@@ -125,9 +134,9 @@ class Game {
         this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vx *= 0.92; p.vy *= 0.92; p.life--; });
     }
 
-    _spawnParticles(x, y, color) {
-        for (let i = 0; i < 8; i++) {
-            const angle = (Math.PI * 2 * i) / 8 + Math.random() * 0.5;
+    _spawnParticles(x, y, color, count = 8) {
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
             const speed = 1.5 + Math.random() * 3;
             this.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 20 + Math.random() * 15, maxLife: 35, color });
         }

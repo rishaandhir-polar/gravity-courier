@@ -15,6 +15,10 @@ export class Package {
         this.health = Math.max(0, this.health - amount);
     }
 
+    heal(amount) {
+        this.health = Math.min(MAX_HEALTH, this.health + amount);
+    }
+
     recordTrail() {
         this.trail.push({ x: this.x, y: this.y });
         if (this.trail.length > 18) this.trail.shift();

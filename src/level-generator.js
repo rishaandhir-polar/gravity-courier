@@ -14,13 +14,27 @@ export class LevelGenerator {
             return x - Math.floor(x);
         };
 
-        const types = [
+        const allTypes = [
             { type: 'wall',   color: '#b4c8ff', bounce: 0.45, traction: 0.8 },
             { type: 'hazard', color: '#ff2d55', bounce: 0.3,  traction: 0.6 },
             { type: 'slick',  color: '#00ffff', bounce: 0.1,  traction: 0.999 },
             { type: 'bouncy', color: '#ff00ff', bounce: 0.95, traction: 0.95 },
             { type: 'sticky', color: '#32cd32', bounce: 0.05, traction: 0.2 },
+            { type: 'repair', color: '#00ff99', bounce: 0.3,  traction: 0.7 },
+            { type: 'shatter',color: '#ffffff', bounce: 0.2,  traction: 0.5 },
+            { type: 'accel',  color: '#ffaa00', bounce: 1.15, traction: 1.0 },
         ];
+
+        // Seeded selection of types FOR THIS LEVEL ONLY (subset variety)
+        const typeCount = Math.floor(random(levelId * 2) * 3) + 3; // 3 to 5 types per level
+        const levelTypes = [];
+        for (let i = 0; i < typeCount; i++) {
+            const t = allTypes[Math.floor(random(levelId * 3 + i) * allTypes.length)];
+            if (!levelTypes.includes(t)) levelTypes.push(t);
+        }
+
+        // Accel is rare — it must be specifically rolled in the levelTypes, 
+        // and we reduce its frequency during placement.
 
         const packageStart = { fx: 0.1 + random(1) * 0.15, fy: 0.1 + random(2) * 0.75 };
         const destination  = { 
@@ -48,7 +62,13 @@ export class LevelGenerator {
         let attempts = 0;
         while (obstacles.length < obstacleCount && attempts < 50) {
             attempts++;
-            const t = types[Math.floor(random(attempts * 5) * types.length)];
+            let t = levelTypes[Math.floor(random(attempts * 5) * levelTypes.length)];
+            
+            // Accel spawn reduction: only 25% chance of sticking if rolled
+            if (t.type === 'accel' && random(attempts * 5.5) > 0.25) {
+                t = levelTypes.find(lt => lt.type === 'wall') || levelTypes[0];
+            }
+
             const shape = random(attempts * 6) < 0.3 ? 'circle' : 'rect';
             let newObs;
 

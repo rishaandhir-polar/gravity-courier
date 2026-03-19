@@ -98,7 +98,7 @@ export class PhysicsCore {
                     entity.x = obs.x + nx * combinedR;
                     entity.y = obs.y + ny * combinedR;
                     this._resolveCollision(entity, obs, nx, ny);
-                    return { hit: true, type: obs.type, speed: this.getSpeed(entity) };
+                    return { hit: true, obstacle: obs, type: obs.type, speed: this.getSpeed(entity) };
                 }
             } else {
                 // Default to Rect
@@ -124,11 +124,11 @@ export class PhysicsCore {
                         entity.y = closestY + ny * r;
                     }
                     this._resolveCollision(entity, obs, nx, ny);
-                    return { hit: true, type: obs.type, speed: this.getSpeed(entity) };
+                    return { hit: true, obstacle: obs, type: obs.type, speed: this.getSpeed(entity) };
                 }
             }
         }
-        return { hit: false, type: null, speed: 0 };
+        return { hit: false, obstacle: null, type: null, speed: 0 };
     }
 
     _resolveCollision(entity, obs, nx, ny) {
