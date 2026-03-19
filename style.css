@@ -58,17 +58,40 @@ body {
 
 @media (max-width: 600px) {
     #ui-overlay {
-        top: 10px; left: 10px; right: 10px;
-        align-items: center; /* Center HUD elements horizontally */
+        top: 0; left: 0; right: 0; height: auto;
     }
-    .glass-panel { padding: 15px; }
-    .stat label { font-size: 8px; }
-    .stat span { font-size: 14px; }
+    .hud {
+        flex-direction: row !important;
+        justify-content: space-around;
+        border-radius: 0 !important;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 5px 0 !important;
+        background: rgba(10,10,15,0.7);
+        backdrop-filter: blur(8px);
+    }
+    .stat {
+        flex-direction: column !important;
+        align-items: center;
+        gap: 0 !important;
+        min-width: 50px;
+    }
+    .stat label {
+        font-size: 7px !important;
+        margin-bottom: 0 !important;
+        opacity: 0.6;
+    }
+    .stat span { font-size: 11px !important; }
+
+    #health-bar-container { height: 3px !important; width: 40px !important; }
+
+    /* Menu Adjustments */
     .menu-logo { font-size: 32px; }
     .btn-large { width: 100%; max-width: 200px; padding: 12px; }
     .instructions { padding: 15px; margin: 15px auto; }
     .instructions li { font-size: 11px; margin-bottom: 8px; }
-    #controls-hint { display: none; } /* Useless on mobile */
+    #controls-hint { display: none; }
+    .overlay .glass-panel { padding: 20px; width: 85%; }
 }
 
 /* ── HUD ─────────────────────────────────────────────────────────────────── */
