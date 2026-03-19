@@ -27,21 +27,45 @@ export async function bindTiltEvents(getState, onRotate) {
         try {
             const permission = await DeviceOrientationEvent.requestPermission();
             if (permission !== 'granted') return;
-        } catch (e) { console.error('Tilt permission denied', e); return; }
+        } catch (e) { return; }
     }
 
-    let lastTilt = 0;
-    const THRESHOLD = 35; // degrees of tilt to trigger
-    const DEBOUNCE  = 800; // ms between tilt rotations
+    let lastRotation  = 0;
+    let baseGamma     = null;
+    let sustainStart  = 0;
+    let pendingDir    = null;
+
+    const THRESHOLD   = 45;   // Higher threshold for intentionality
+    const DEBOUNCE    = 1000; // Longer debounce for stability
+    const SUSTAIN_MS  = 200;  // Must hold tilt for this long
 
     window.addEventListener('deviceorientation', (e) => {
-        if (getState() !== 'PLAYING' || Date.now() - lastTilt < DEBOUNCE) return;
+        if (getState() !== 'PLAYING' || Date.now() - lastRotation < DEBOUNCE) {
+            baseGamma = null; // reset calibration when not playing
+            return;
+        }
         
-        // gamma is left-to-right tilt (-90 to 90)
-        // beta is front-to-back tilt (-180 to 180)
-        if (Math.abs(e.gamma) > THRESHOLD) {
-            onRotate(e.gamma > 0 ? 'cw' : 'ccw');
-            lastTilt = Date.now();
+        // Initial calibration on the first frame of gameplay
+        if (baseGamma === null) { baseGamma = e.gamma; return; }
+
+        const deltaGamma = e.gamma - baseGamma;
+        const currentDir = Math.abs(deltaGamma) > THRESHOLD ? (deltaGamma > 0 ? 'cw' : 'ccw') : null;
+
+        // Ignore if phone is nearly flat on a table (beta < 20)
+        if (Math.abs(e.beta) < 20) return;
+
+        if (currentDir && currentDir === pendingDir) {
+            if (Date.now() - sustainStart > SUSTAIN_MS) {
+                onRotate(currentDir);
+                lastRotation = Date.now();
+                pendingDir   = null;
+                baseGamma    = e.gamma; // re-calibrate after rotation
+            }
+        } else if (currentDir) {
+            pendingDir   = currentDir;
+            sustainStart = Date.now();
+        } else {
+            pendingDir = null;
         }
     });
 }
