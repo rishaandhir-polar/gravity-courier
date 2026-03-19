@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity Courier</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2305050a'/><rect x='10' y='10' width='12' height='12' rx='2' fill='%2300f2ff'/></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+
+        <!-- Centering wrapper — never touched by JS -->
+        <div id="game-world-anchor">
+            <!-- Rotatable world layer — JS applies rotate() here only -->
+            <div id="game-world">
+                <canvas id="game-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- HUD — always upright, never rotates -->
+        <div id="ui-overlay">
+            <div class="glass-panel" id="status-panel">
+                <div id="level-title" class="level-title">GRAVITY COURIER</div>
+                <div class="stat">
+                    <label>GRAVITY</label>
+                    <span id="gravity-dir">DOWN</span>
+                </div>
+                <div class="stat">
+                    <label>TIME</label>
+                    <span id="timer-display">60</span>
+                </div>
+                <div class="stat">
+                    <label>ROTATIONS</label>
+                    <span id="rotation-count">0</span>
+                </div>
+                <div class="stat">
+                    <label>PACKAGE INTEGRITY</label>
+                    <div class="health-bar">
+                        <div id="health-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="controls-hint">
+                <kbd>←</kbd> Rotate Left &nbsp;|&nbsp; <kbd>→</kbd> Rotate Right
+            </div>
+        </div>
+
+        <!-- Menu Overlay -->
+        <div id="menu-overlay" class="overlay active">
+            <div class="glass-panel main-menu">
+                <div class="menu-logo">GRAVITY<br><span>COURIER</span></div>
+                
+                <div class="instructions">
+                    <h3>HOW TO PLAY</h3>
+                    <ul>
+                        <li><kbd>←</kbd> <kbd>→</kbd> <b>Rotate</b> the world to shift gravity.</li>
+                        <li>Guide the package to the <b>cyan zone</b>.</li>
+                        <li>Watch your <b>integrity</b>. Speed + Hazards = Damage.</li>
+                        <li>Deliver before the <b>60s timer</b> expires.</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-large" id="start-game-btn">DEPLOY SECTOR 01 →</button>
+            </div>
+        </div>
+
+        <!-- Win Overlay -->
+        <div id="win-overlay" class="overlay">
+            <div class="glass-panel result-panel">
+                <div class="result-icon">✓</div>
+                <h2 class="result-title accent">DELIVERED</h2>
+                <div class="result-stats">
+                    <div class="result-stat">
+                        <label>ROTATIONS USED</label>
+                        <span id="win-rotations">0</span>
+                    </div>
+                    <div class="result-stat">
+                        <label>PACKAGE INTEGRITY</label>
+                        <span id="win-health">100</span>%
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-secondary" onclick="location.reload()">MENU</button>
+                    <button class="btn" id="next-level-btn">NEXT SECTOR →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="game-over-overlay" class="overlay">
+            <div class="glass-panel result-panel">
+                <div class="result-icon danger">✕</div>
+                <h2 class="result-title danger">PACKAGE LOST</h2>
+                <p class="result-msg" id="game-over-msg">Integrity compromised. Sector offline.</p>
+                <div class="result-actions">
+                    <button class="btn btn-secondary" onclick="location.reload()">MENU</button>
+                    <button class="btn" id="retry-btn">RETRY SECTOR</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

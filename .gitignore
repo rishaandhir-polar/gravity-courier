@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.agent
+.kiro
+.vscode
+*.log
+.DS_Store

@@ -1,0 +1,400 @@
+:root {
+    --bg:           #05050a;
+    --accent:       #00f2ff;
+    --danger:       #ff2d55;
+    --warn:         #ffcc00;
+    --glass-bg:     rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    color: #fff;
+    font-family: var(--font);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, #0d0d1f 0%, var(--bg) 100%);
+    overflow: hidden;
+}
+
+/* Centering wrapper — positions the square in the middle, never rotated */
+#game-world-anchor {
+    position: absolute;
+    width:  min(100vw, 100vh);
+    height: min(100vw, 100vh);
+    top:  50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Rotation target — JS sets rotate() here, origin is its own center */
+#game-world {
+    position: absolute;
+    inset: 0;
+    transform-origin: center center;
+}
+
+#game-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #05050a;
+    display: block;
+    touch-action: none; /* Prevents scrolling during swipe/tilt */
+}
+
+@media (max-width: 600px) {
+    #ui-overlay {
+        top: 10px; left: 10px; right: 10px;
+        align-items: center; /* Center HUD elements horizontally */
+    }
+    .glass-panel { padding: 15px; }
+    .stat label { font-size: 8px; }
+    .stat span { font-size: 14px; }
+    .menu-logo { font-size: 32px; }
+    .btn-large { width: 100%; max-width: 200px; padding: 12px; }
+    .instructions { padding: 15px; margin: 15px auto; }
+    .instructions li { font-size: 11px; margin-bottom: 8px; }
+    #controls-hint { display: none; } /* Useless on mobile */
+}
+
+/* ── HUD ─────────────────────────────────────────────────────────────────── */
+#ui-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+#status-panel {
+    width: 220px;
+    pointer-events: all;
+}
+
+.level-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.18rem;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.stat {
+    margin-bottom: 0.9rem;
+}
+
+.stat label {
+    display: block;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.1rem;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+}
+
+.stat span {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.health-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#health-fill {
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transition: width 0.25s ease, background 0.4s ease;
+}
+
+#controls-hint {
+    width: 100%;
+    text-align: center;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08rem;
+    pointer-events: none;
+}
+
+kbd {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.7);
+}
+
+/* ── Overlays ────────────────────────────────────────────────────────────── */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.overlay.active { display: flex; }
+
+/* ── Main Menu ───────────────────────────────────────────────────────────── */
+.main-menu {
+    width: min(440px, 92vw);
+    text-align: center;
+}
+
+.menu-logo {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.25rem;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.menu-logo span {
+    color: var(--accent);
+    font-size: 1.1rem;
+    letter-spacing: 0.5rem;
+}
+
+.menu-sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05rem;
+}
+
+.instructions {
+    text-align: left;
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    max-width: 320px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.instructions h3 {
+    margin-top: 0;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 15px;
+}
+
+.instructions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instructions li {
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+}
+
+.instructions b { color: #fff; }
+
+.btn-large {
+    width: 250px;
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+#level-list { text-align: left; }
+
+.level-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, transform 0.15s;
+}
+
+.level-item:hover {
+    background: rgba(0,242,255,0.12);
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.level-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1rem;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.level-desc {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.2rem;
+}
+
+.level-arrow {
+    color: var(--accent);
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.level-item:hover .level-arrow { opacity: 1; }
+
+/* ── Result panels ───────────────────────────────────────────────────────── */
+.result-panel {
+    width: min(360px, 90vw);
+    text-align: center;
+}
+
+.result-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+}
+
+.result-icon.danger { color: var(--danger); }
+
+.result-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.2rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.result-title.accent { color: var(--accent); }
+.result-title.danger { color: var(--danger); }
+
+.result-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+}
+
+.result-stat label {
+    display: block;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.result-stat span {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.result-msg {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1.75rem;
+}
+
+.result-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+    background: var(--accent);
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 6px;
+    color: #000;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.08rem;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.1s;
+    text-transform: uppercase;
+}
+
+.btn:hover  { filter: brightness(1.15); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.btn-secondary:hover { background: rgba(255,255,255,0.14); filter: none; }
+
+/* ── Timer urgent state ──────────────────────────────────────────────────── */
+#timer-display.urgent {
+    color: var(--danger);
+    animation: pulse-urgent 0.6s ease infinite alternate;
+}
+
+@keyframes pulse-urgent {
+    from { opacity: 1; }
+    to   { opacity: 0.4; }
+}
+
+/* ── Canvas shake ────────────────────────────────────────────────────────── */
+@keyframes shake {
+    0%,100% { transform: translate(0,0); }
+    20%      { transform: translate(-4px, 2px); }
+    40%      { transform: translate(4px, -2px); }
+    60%      { transform: translate(-3px, 3px); }
+    80%      { transform: translate(3px, -1px); }
+}
+
+#game-canvas.shake {
+    animation: shake 0.22s ease both;
+}
