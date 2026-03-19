@@ -59,22 +59,43 @@ body {
 @media (max-width: 800px) {
     #ui-overlay {
         top: 0; left: 0; right: 0; height: auto;
+        padding: 0;
     }
     #status-panel {
+        display: flex !important;
         flex-direction: row !important;
-        justify-content: space-around;
+        align-items: center;
+        justify-content: space-between;
+        width: 100% !important;
         border-radius: 0 !important;
         border: none;
         border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding: 5px 0 !important;
-        background: rgba(10,10,15,0.7);
+        padding: 6px 15px !important;
+        background: rgba(10,10,15,0.75);
         backdrop-filter: blur(8px);
+        transition: height 0.3s ease;
+    }
+    .level-title {
+        font-size: 9px !important;
+        margin-bottom: 0 !important;
+        margin-right: 0 !important;
+        white-space: nowrap;
+        opacity: 0.8;
+    }
+    .hud-content {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        align-items: center;
+        overflow: hidden;
+        transition: all 0.3s ease;
     }
     .stat {
         flex-direction: column !important;
         align-items: center;
         gap: 0 !important;
-        min-width: 50px;
+        margin-bottom: 0 !important;
+        min-width: 45px;
     }
     .stat label {
         font-size: 7px !important;
@@ -82,50 +103,26 @@ body {
         opacity: 0.6;
     }
     .stat span { font-size: 11px !important; }
-
-    .hud-content {
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-        align-items: center;
-        max-height: none; /* Inherit normal height when expanded */
-    }
-
-    #status-panel {
-        display: flex;
-        flex-direction: column !important; /* Title on top, content below or same line? */
-        align-items: flex-start;
-        padding: 10px 15px !important;
-        width: 100% !important;
-    }
-
-    #status-panel.collapsed {
-        height: 38px;
-        width: 100% !important;
-        padding-top: 8px !important;
-    }
-
-    #status-panel.collapsed .hud-content {
-        display: none;
-    }
-
-    .level-title {
-        font-size: 10px !important;
-        margin-bottom: 5px !important;
-    }
-
-    #health-bar-container { height: 3px !important; width: 40px !important; }
+    
+    #health-bar-container { height: 3px !important; width: 35px !important; }
 
     #hud-toggle {
-        top: 5px; right: 5px;
+        position: relative; /* Not absolute on mobile row */
+        top: auto; right: auto;
         width: 24px; height: 24px;
         background: none;
         border: none;
+        margin-left: 10px;
     }
 
     #status-panel.collapsed {
-        height: 35px;
-        overflow: hidden;
+        padding: 8px 15px !important;
+    }
+
+    #status-panel.collapsed .hud-content {
+        width: 0;
+        opacity: 0;
+        pointer-events: none;
     }
 
     /* Menu Adjustments */
