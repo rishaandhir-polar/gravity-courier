@@ -60,7 +60,7 @@ body {
     #ui-overlay {
         top: 0; left: 0; right: 0; height: auto;
     }
-    .hud {
+    #status-panel {
         flex-direction: row !important;
         justify-content: space-around;
         border-radius: 0 !important;
@@ -83,7 +83,50 @@ body {
     }
     .stat span { font-size: 11px !important; }
 
+    .hud-content {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+        max-height: none; /* Inherit normal height when expanded */
+    }
+
+    #status-panel {
+        display: flex;
+        flex-direction: column !important; /* Title on top, content below or same line? */
+        align-items: flex-start;
+        padding: 10px 15px !important;
+        width: 100% !important;
+    }
+
+    #status-panel.collapsed {
+        height: 38px;
+        width: 100% !important;
+        padding-top: 8px !important;
+    }
+
+    #status-panel.collapsed .hud-content {
+        display: none;
+    }
+
+    .level-title {
+        font-size: 10px !important;
+        margin-bottom: 5px !important;
+    }
+
     #health-bar-container { height: 3px !important; width: 40px !important; }
+
+    #hud-toggle {
+        top: 5px; right: 5px;
+        width: 24px; height: 24px;
+        background: none;
+        border: none;
+    }
+
+    #status-panel.collapsed {
+        height: 35px;
+        overflow: hidden;
+    }
 
     /* Menu Adjustments */
     .menu-logo { font-size: 32px; }
@@ -129,6 +172,63 @@ body {
     margin-bottom: 1.2rem;
     text-transform: uppercase;
     font-weight: 700;
+    margin-right: 24px; /* Space for toggle */
+}
+
+#hud-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: var(--accent);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+#hud-toggle:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: var(--accent);
+}
+
+#hud-toggle svg {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#status-panel.collapsed #hud-toggle svg {
+    transform: rotate(180deg);
+}
+
+.hud-content {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    max-height: 400px; /* High enough to fit everything */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#status-panel.collapsed {
+    padding-bottom: 0.8rem;
+    width: 200px; /* Slightly narrower when collapsed */
+}
+
+#status-panel.collapsed .hud-content {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    margin: 0;
+    pointer-events: none;
+}
+
+#status-panel.collapsed .level-title {
+    margin-bottom: 0;
 }
 
 .stat {

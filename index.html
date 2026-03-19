@@ -21,23 +21,28 @@
         <!-- HUD — always upright, never rotates -->
         <div id="ui-overlay">
             <div class="glass-panel" id="status-panel">
+                <button id="hud-toggle" aria-label="Toggle HUD">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                </button>
                 <div id="level-title" class="level-title">GRAVITY COURIER</div>
-                <div class="stat">
-                    <label>GRAVITY</label>
-                    <span id="gravity-dir">DOWN</span>
-                </div>
-                <div class="stat">
-                    <label>TIME</label>
-                    <span id="timer-display">60</span>
-                </div>
-                <div class="stat">
-                    <label>ROTATIONS</label>
-                    <span id="rotation-count">0</span>
-                </div>
-                <div class="stat">
-                    <label>PACKAGE INTEGRITY</label>
-                    <div class="health-bar">
-                        <div id="health-fill"></div>
+                <div class="hud-content">
+                    <div class="stat">
+                        <label>GRAVITY</label>
+                        <span id="gravity-dir">DOWN</span>
+                    </div>
+                    <div class="stat">
+                        <label>TIME</label>
+                        <span id="timer-display">60</span>
+                    </div>
+                    <div class="stat">
+                        <label>ROTATIONS</label>
+                        <span id="rotation-count">0</span>
+                    </div>
+                    <div class="stat">
+                        <label>PACKAGE INTEGRITY</label>
+                        <div class="health-bar">
+                            <div id="health-fill"></div>
+                        </div>
                     </div>
                 </div>
             </div>

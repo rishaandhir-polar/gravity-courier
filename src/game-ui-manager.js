@@ -5,11 +5,24 @@ export class GameUIManager {
     constructor(callbacks) {
         this.callbacks = callbacks; // e.g., onRestart, onNextLevel, onMenu
         this._bindStaticButtons();
+        this._bindHUDToggles();
     }
 
     _bindStaticButtons() {
         document.getElementById('retry-btn').onclick = () => this.callbacks.onRestart();
         // Next level button is dynamic, bound in showWin
+    }
+
+    _bindHUDToggles() {
+        const toggleBtn = document.getElementById('hud-toggle');
+        const panel     = document.getElementById('status-panel');
+        
+        if (toggleBtn && panel) {
+            toggleBtn.onclick = (e) => {
+                e.stopPropagation();
+                panel.classList.toggle('collapsed');
+            };
+        }
     }
 
     updateHUD({ gravityLabel, rotations, time, health }) {
