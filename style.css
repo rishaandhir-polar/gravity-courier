@@ -259,14 +259,15 @@ kbd {
     line-height: 1.5;
 }
 
-.instructions b { color: #fff; }
-
-.btn-large {
-    width: 250px;
-    padding: 16px;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
+.mobile-tip {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 15px;
+    opacity: 0.8;
+    text-align: center;
+    font-style: italic;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 15px;
 }
 
 #level-list { text-align: left; }

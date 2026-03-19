@@ -19,9 +19,6 @@ export function bindInputEvents(getState, onRotate, onAction) {
     });
 }
 
-/**
- * Binds device tilt (accelerometer) events for mobile rotation.
- */
 export async function bindTiltEvents(getState, onRotate) {
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         try {
@@ -30,48 +27,23 @@ export async function bindTiltEvents(getState, onRotate) {
         } catch (e) { return; }
     }
 
-    let lastRotation  = 0;
-    let baseGamma     = null;
-    let sustainStart  = 0;
-    let pendingDir    = null;
-
-    const THRESHOLD   = 45;   // Higher threshold for intentionality
-    const DEBOUNCE    = 1000; // Longer debounce for stability
-    const SUSTAIN_MS  = 200;  // Must hold tilt for this long
-
+    const DEG_TO_RAD = Math.PI / 180;
     window.addEventListener('deviceorientation', (e) => {
-        if (getState() !== 'PLAYING' || Date.now() - lastRotation < DEBOUNCE) {
-            baseGamma = null;
-            return;
-        }
+        if (getState() !== 'PLAYING') return;
 
-        // Determine if we should use gamma (portrait) or beta (landscape)
+        // In Portrait: gamma is X-tilt, beta is Y-tilt
+        // In Landscape: beta is X-tilt, gamma is Y-tilt
         const isLandscape = window.innerWidth > window.innerHeight;
-        const rawTilt    = isLandscape ? e.beta : e.gamma;
+        const xField = isLandscape ? e.beta : e.gamma;
+        const yField = isLandscape ? -e.gamma : e.beta;
+
+        // Normalize to a 2D vector
+        const gx = Math.max(-1, Math.min(1, xField / 45));
+        const gy = Math.max(-1, Math.min(1, yField / 45));
         
-        // Initial calibration on the first frame of gameplay
-        if (baseGamma === null) { baseGamma = rawTilt; return; }
+        // Deadzone check (ignore center)
+        if (Math.hypot(gx, gy) < 0.1) return;
 
-        let deltaTilt = rawTilt - baseGamma;
-        // Invert delta if in 'landscape-right' (simple detection based on beta sign if needed)
-        // For simplicity, we assume standard landscape-primary
-        const currentDir = Math.abs(deltaTilt) > THRESHOLD ? (deltaTilt > 0 ? 'cw' : 'ccw') : null;
-
-        // Ignore if phone is nearly flat or totally vertical
-        if (Math.abs(e.beta) < 15 || Math.abs(e.beta) > 165) return;
-
-        if (currentDir && currentDir === pendingDir) {
-            if (Date.now() - sustainStart > SUSTAIN_MS) {
-                onRotate(currentDir);
-                lastRotation = Date.now();
-                pendingDir   = null;
-                baseGamma    = rawTilt; 
-            }
-        } else if (currentDir) {
-            pendingDir   = currentDir;
-            sustainStart = Date.now();
-        } else {
-            pendingDir = null;
-        }
+        onRotate(gx, gy);
     });
 }

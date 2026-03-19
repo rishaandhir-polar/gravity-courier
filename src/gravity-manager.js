@@ -6,50 +6,53 @@
 export class GravityManager {
     constructor() {
         this.angle = 0; // cumulative rotation in degrees (can exceed 360)
+        this.vx = 0;
+        this.vy = 1;
+        this.useFreeVector = false;
     }
 
     /**
-     * Rotates the screen (and thus gravity direction) clockwise by 90 degrees.
+     * Enables and sets an arbitrary gravity vector for free-form tilt.
+     * @param {number} x 
+     * @param {number} y 
+     */
+    setFreeVector(x, y) {
+        this.useFreeVector = true;
+        this.vx = x;
+        this.vy = y;
+    }
+
+    /**
+     * Rotates screen by 90 degrees (Snap mode).
      */
     rotateClockwise() {
+        this.useFreeVector = false;
         this.angle += 90;
     }
 
     /**
-     * Rotates the screen (and thus gravity direction) counter-clockwise by 90 degrees.
+     * Rotates screen by -90 degrees (Snap mode).
      */
     rotateCounterClockwise() {
+        this.useFreeVector = false;
         this.angle -= 90;
     }
 
-    /**
-     * Returns the normalized display angle (0-359) for CSS transform.
-     * @returns {number}
-     */
-    getDisplayAngle() {
-        return ((this.angle % 360) + 360) % 360;
-    }
-
-    /**
-     * Returns the raw cumulative angle (for smooth CSS transitions).
-     * @returns {number}
-     */
-    getRawAngle() {
-        return this.angle;
-    }
+    getDisplayAngle() { return ((this.angle % 360) + 360) % 360; }
+    getRawAngle()     { return this.angle; }
 
     /**
      * Calculates the gravity force vector in world (canvas) space.
-     * When screen rotates clockwise by N degrees, gravity vector rotates counter-clockwise by N degrees.
      * @param {number} strength
      * @returns {{x: number, y: number}}
      */
     getVector(strength) {
-        // Base gravity is always "down" on screen (positive Y in canvas coords).
-        // When screen rotates CW by `angle`, the world-space gravity direction rotates CCW.
+        if (this.useFreeVector) {
+            return { x: this.vx * strength, y: this.vy * strength };
+        }
         const rad = this.angle * (Math.PI / 180);
         return {
-            x: (Math.sin(rad) * strength) || 0,  // || 0 eliminates -0 from floating point
+            x: (Math.sin(rad) * strength) || 0,
             y: (Math.cos(rad) * strength) || 0
         };
     }

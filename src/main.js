@@ -40,7 +40,10 @@ class Game {
             if (this.state === 'GAMEOVER') this.loadLevel(this.levelDef.id);
         });
         this.ui.initMenu(async (id) => {
-            await bindTiltEvents(() => this.state, (dir) => this.rotate(dir));
+            this.gravity.resetToSnap(); // Default to snap
+            await bindTiltEvents(() => this.state, (gx, gy) => {
+                this.gravity.setFreeVector(gx, gy);
+            });
             this.loadLevel(id);
         });
         this._loop();
