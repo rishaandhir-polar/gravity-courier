@@ -41,25 +41,31 @@ export async function bindTiltEvents(getState, onRotate) {
 
     window.addEventListener('deviceorientation', (e) => {
         if (getState() !== 'PLAYING' || Date.now() - lastRotation < DEBOUNCE) {
-            baseGamma = null; // reset calibration when not playing
+            baseGamma = null;
             return;
         }
+
+        // Determine if we should use gamma (portrait) or beta (landscape)
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const rawTilt    = isLandscape ? e.beta : e.gamma;
         
         // Initial calibration on the first frame of gameplay
-        if (baseGamma === null) { baseGamma = e.gamma; return; }
+        if (baseGamma === null) { baseGamma = rawTilt; return; }
 
-        const deltaGamma = e.gamma - baseGamma;
-        const currentDir = Math.abs(deltaGamma) > THRESHOLD ? (deltaGamma > 0 ? 'cw' : 'ccw') : null;
+        let deltaTilt = rawTilt - baseGamma;
+        // Invert delta if in 'landscape-right' (simple detection based on beta sign if needed)
+        // For simplicity, we assume standard landscape-primary
+        const currentDir = Math.abs(deltaTilt) > THRESHOLD ? (deltaTilt > 0 ? 'cw' : 'ccw') : null;
 
-        // Ignore if phone is nearly flat on a table (beta < 20)
-        if (Math.abs(e.beta) < 20) return;
+        // Ignore if phone is nearly flat or totally vertical
+        if (Math.abs(e.beta) < 15 || Math.abs(e.beta) > 165) return;
 
         if (currentDir && currentDir === pendingDir) {
             if (Date.now() - sustainStart > SUSTAIN_MS) {
                 onRotate(currentDir);
                 lastRotation = Date.now();
                 pendingDir   = null;
-                baseGamma    = e.gamma; // re-calibrate after rotation
+                baseGamma    = rawTilt; 
             }
         } else if (currentDir) {
             pendingDir   = currentDir;
