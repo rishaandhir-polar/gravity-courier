@@ -23,6 +23,14 @@ export class GravityManager {
     }
 
     /**
+     * Resets to discrete 90-degree snap mode.
+     */
+    resetToSnap() {
+        this.useFreeVector = false;
+        this.angle = 0;
+    }
+
+    /**
      * Rotates screen by 90 degrees (Snap mode).
      */
     rotateClockwise() {
