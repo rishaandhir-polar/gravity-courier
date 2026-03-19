@@ -58,72 +58,59 @@ body {
 
 @media (max-width: 800px) {
     #ui-overlay {
-        top: 0; left: 0; right: 0; height: auto;
-        padding: 0;
+        padding: 1rem; /* Smaller padding on mobile */
     }
     #status-panel {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center;
-        justify-content: space-between;
-        width: 100% !important;
-        border-radius: 0 !important;
-        border: none;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding: 6px 15px !important;
-        background: rgba(10,10,15,0.75);
-        backdrop-filter: blur(8px);
-        transition: height 0.3s ease;
+        width: 180px !important; /* Slightly smaller on mobile */
+        padding: 1.2rem !important;
+        border-radius: 12px !important;
+        border: 1px solid var(--glass-border) !important;
     }
     .level-title {
-        font-size: 9px !important;
-        margin-bottom: 0 !important;
-        margin-right: 0 !important;
-        white-space: nowrap;
-        opacity: 0.8;
+        font-size: 0.6rem !important;
+        margin-bottom: 1rem !important;
+        white-space: normal;
+        margin-right: 28px;
     }
     .hud-content {
-        display: flex;
-        flex-direction: row;
-        gap: 12px;
-        align-items: center;
-        overflow: hidden;
-        transition: all 0.3s ease;
+        display: block !important; /* Stack stats vertically */
+        max-height: 400px;
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.35s ease;
     }
     .stat {
         flex-direction: column !important;
-        align-items: center;
-        gap: 0 !important;
-        margin-bottom: 0 !important;
-        min-width: 45px;
+        align-items: flex-start !important;
+        margin-bottom: 0.8rem !important;
+        min-width: 0;
     }
     .stat label {
-        font-size: 7px !important;
-        margin-bottom: 0 !important;
-        opacity: 0.6;
+        font-size: 0.55rem !important;
+        margin-bottom: 0.2rem !important;
     }
-    .stat span { font-size: 11px !important; }
+    .stat span { font-size: 0.95rem !important; }
     
-    #health-bar-container { height: 3px !important; width: 35px !important; }
-
     #hud-toggle {
-        position: relative; /* Not absolute on mobile row */
-        top: auto; right: auto;
-        width: 24px; height: 24px;
-        background: none;
-        border: none;
-        margin-left: 10px;
+        position: absolute;
+        top: 0.8rem; right: 0.8rem;
+        width: 32px; height: 32px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
+        display: flex !important;
     }
 
     #status-panel.collapsed {
-        padding: 8px 15px !important;
+        width: 160px !important;
+        padding-bottom: 0.8rem !important;
     }
-
     #status-panel.collapsed .hud-content {
-        width: 0;
+        max-height: 0;
         opacity: 0;
+        transform: translateY(-10px);
         pointer-events: none;
     }
+    #status-panel.collapsed .level-title { margin-bottom: 0 !important; }
 
     /* Menu Adjustments */
     .menu-logo { font-size: 32px; }
