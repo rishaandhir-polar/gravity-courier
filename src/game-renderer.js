@@ -162,14 +162,15 @@ export class GameRenderer {
         const ctx = this.ctx;
         const time = Date.now() / 1000;
         collectibles.forEach(c => {
-            const bounce = Math.sin(time * 4) * 4;
-            const s = 6;
+            const timeOffset = (c.x + c.y) * 0.1; // Unique pulse offset
+            const bounce = Math.sin(time * 4 + timeOffset) * 5;
+            const s = 9;
             ctx.save();
             ctx.translate(c.x, c.y + bounce);
-            ctx.rotate(time * 2);
-            ctx.shadowBlur  = 12;
+            ctx.rotate(time * 2 + timeOffset);
+            ctx.shadowBlur  = 20;
             ctx.shadowColor = '#ffd700';
-            ctx.fillStyle   = '#ffd700';
+            ctx.fillStyle   = `rgba(255, 215, 0, ${0.8 + Math.sin(time * 5) * 0.2})`;
             ctx.beginPath();
             ctx.moveTo(0, -s); ctx.lineTo(s, 0); ctx.lineTo(0, s); ctx.lineTo(-s, 0); ctx.closePath();
             ctx.fill();

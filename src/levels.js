@@ -19,6 +19,10 @@ export const LEVELS = [
         obstacles: [
             { fx: 0.35, fy: 0.3, fw: 0.04, fh: 0.45, type: 'wall' },
             { fx: 0.6,  fy: 0.1, fw: 0.04, fh: 0.45, type: 'wall' },
+        ],
+        collectibles: [
+            { fx: 0.5, fy: 0.2, type: 'credit' },
+            { fx: 0.5, fy: 0.8, type: 'credit' }
         ]
     },
     {
@@ -32,6 +36,10 @@ export const LEVELS = [
             { fx: 0.5,  fy: 0.45, fw: 0.04, fh: 0.55, type: 'wall' },
             { fx: 0.72, fy: 0.0,  fw: 0.04, fh: 0.55, type: 'wall' },
             { fx: 0.38, fy: 0.3,  fw: 0.1,  fh: 0.08, type: 'hazard' },
+        ],
+        collectibles: [
+            { fx: 0.4, fy: 0.1, type: 'credit' },
+            { fx: 0.6, fy: 0.9, type: 'credit' }
         ]
     },
     {
@@ -47,6 +55,11 @@ export const LEVELS = [
             { fx: 0.3,  fy: 0.25, fw: 0.08, fh: 0.08, type: 'hazard' },
             { fx: 0.52, fy: 0.55, fw: 0.08, fh: 0.08, type: 'hazard' },
             { fx: 0.72, fy: 0.25, fw: 0.08, fh: 0.08, type: 'hazard' },
+        ],
+        collectibles: [
+            { fx: 0.3, fy: 0.1, type: 'credit' },
+            { fx: 0.52, fy: 0.4, type: 'credit' },
+            { fx: 0.72, fy: 0.1, type: 'credit' }
         ]
     },
     {
@@ -64,6 +77,11 @@ export const LEVELS = [
             { fx: 0.65, fy: 0.6,  fw: 0.2,  fh: 0.04, type: 'wall' },
             { fx: 0.35, fy: 0.35, fw: 0.08, fh: 0.08, type: 'hazard' },
             { fx: 0.6,  fy: 0.45, fw: 0.08, fh: 0.08, type: 'hazard' },
+        ],
+        collectibles: [
+            { fx: 0.25, fy: 0.4, type: 'credit' },
+            { fx: 0.55, fy: 0.7, type: 'credit' },
+            { fx: 0.8, fy: 0.2, type: 'credit' }
         ]
     },
     {
@@ -82,6 +100,11 @@ export const LEVELS = [
             { fx: 0.72, fy: 0.35, fw: 0.08, fh: 0.08, type: 'hazard' },
             { fx: 0.2,  fy: 0.62, fw: 0.08, fh: 0.08, type: 'hazard' },
             { fx: 0.72, fy: 0.62, fw: 0.08, fh: 0.08, type: 'hazard' },
+        ],
+        collectibles: [
+            { fx: 0.15, fy: 0.35, type: 'credit' },
+            { fx: 0.85, fy: 0.35, type: 'credit' },
+            { fx: 0.5, fy: 0.6,   type: 'credit' }
         ]
     }
 ];
