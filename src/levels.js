@@ -108,6 +108,11 @@ export function resolveLevel(level, W, H) {
             w: (o.fw || 0) * W,
             h: (o.fh || 0) * H,
             radius: (o.fr || 0) * W
+        })),
+        collectibles: (level.collectibles || []).map(c => ({
+            ...c,
+            x: c.fx * W,
+            y: c.fy * H
         }))
     };
 }

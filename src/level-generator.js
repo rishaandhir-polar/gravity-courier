@@ -98,11 +98,33 @@ export class LevelGenerator {
         const namePrefix = prefixes[Math.floor(random(101) * prefixes.length)];
         const nameSuffix = suffixes[Math.floor(random(102) * suffixes.length)];
 
+        const collectibles = [];
+        attempts = 0;
+        while (collectibles.length < 3 && attempts < 40) {
+            attempts++;
+            const c = { 
+                fx: 0.1 + random(attempts * 10) * 0.8, 
+                fy: 0.1 + random(attempts * 11) * 0.8, 
+                type: 'credit',
+                id: `fragment-${collectibles.length}` 
+            };
+            const isNearStart = Math.hypot(c.fx - packageStart.fx, c.fy - packageStart.fy) < 0.1;
+            const isNearEnd   = Math.hypot(c.fx - destination.fx, c.fy - destination.fy) < 0.1;
+            const hitObs = obstacles.some(o => {
+                const w = o.shape === 'circle' ? o.fr * 2 : o.fw;
+                const h = o.shape === 'circle' ? o.fr * 2 : o.fh;
+                const x = o.shape === 'circle' ? o.fx - o.fr : o.fx;
+                const y = o.shape === 'circle' ? o.fy - o.fr : o.fy;
+                return c.fx > x && c.fx < x + w && c.fy > y && c.fy < y + h;
+            });
+            if (!isNearStart && !isNearEnd && !hitObs) collectibles.push(c);
+        }
+
         return {
             id: levelId,
             name: `SECTOR ${levelId.toString().padStart(2, '0')} — ${namePrefix} ${nameSuffix}`,
             description: `Procedural challenge level ${diff}. Watch for the specialized terrain.`,
-            packageStart, destination, obstacles
+            packageStart, destination, obstacles, collectibles
         };
     }
 }

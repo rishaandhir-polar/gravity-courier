@@ -25,16 +25,22 @@ export class GameUIManager {
         }
     }
 
-    updateHUD({ gravityLabel, rotations, time, health }) {
-        document.getElementById('gravity-dir').innerText    = gravityLabel;
-        document.getElementById('rotation-count').innerText = rotations;
+    updateHUD({ gravityLabel, rotations, time, health, credits }) {
+        if (gravityLabel) document.getElementById('gravity-dir').innerText = gravityLabel;
+        if (rotations !== undefined) document.getElementById('rotation-count').innerText = rotations;
+        if (credits !== undefined) document.getElementById('credit-count').innerText = credits;
+        
         const timerEl = document.getElementById('timer-display');
-        timerEl.innerText = Math.max(0, Math.ceil(time));
-        timerEl.classList.toggle('urgent', time <= 10);
+        if (time !== undefined) {
+            timerEl.innerText = Math.max(0, Math.ceil(time));
+            timerEl.classList.toggle('urgent', time <= 10);
+        }
         
         const healthFill = document.getElementById('health-fill');
-        healthFill.style.width      = `${health}%`;
-        healthFill.style.background = health > 50 ? 'var(--accent)' : health > 25 ? '#ffcc00' : 'var(--danger)';
+        if (health !== undefined) {
+            healthFill.style.width      = `${health}%`;
+            healthFill.style.background = health > 50 ? 'var(--accent)' : health > 25 ? '#ffcc00' : 'var(--danger)';
+        }
     }
 
     showOverlay(id, active = true) {

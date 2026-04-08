@@ -135,6 +135,48 @@ export class GameRenderer {
         });
     }
 
+    drawCompass(pkg, destination) {
+        if (!pkg || !destination) return;
+        const dx = destination.x + destination.w / 2 - pkg.x;
+        const dy = destination.y + destination.h / 2 - pkg.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 120) return; // Hide when close
+
+        const angle = Math.atan2(dy, dx);
+        const orbit = 35;
+        const ctx   = this.ctx;
+
+        ctx.save();
+        ctx.translate(pkg.x + Math.cos(angle) * orbit, pkg.y + Math.sin(angle) * orbit);
+        ctx.rotate(angle);
+        ctx.fillStyle   = 'rgba(0, 242, 255, 0.7)';
+        ctx.shadowBlur  = 8;
+        ctx.shadowColor = '#00f2ff';
+        ctx.beginPath();
+        ctx.moveTo(8, 0); ctx.lineTo(-6, -5); ctx.lineTo(-6, 5); ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
+
+    drawCollectibles(collectibles) {
+        const ctx = this.ctx;
+        const time = Date.now() / 1000;
+        collectibles.forEach(c => {
+            const bounce = Math.sin(time * 4) * 4;
+            const s = 6;
+            ctx.save();
+            ctx.translate(c.x, c.y + bounce);
+            ctx.rotate(time * 2);
+            ctx.shadowBlur  = 12;
+            ctx.shadowColor = '#ffd700';
+            ctx.fillStyle   = '#ffd700';
+            ctx.beginPath();
+            ctx.moveTo(0, -s); ctx.lineTo(s, 0); ctx.lineTo(0, s); ctx.lineTo(-s, 0); ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        });
+    }
+
     drawGravityArrow() {
         const { width: W, height: H } = this.canvas;
         const grav  = this.gravity.getVector(1);

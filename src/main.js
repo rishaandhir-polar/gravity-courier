@@ -32,6 +32,8 @@ class Game {
         this.particles = [];
         this.timeLeft  = LEVEL_TIME;
         this.lastTick  = null;
+        this.credits   = parseInt(localStorage.getItem('gravity-courier-credits')) || 0;
+        this.sessionCredits = 0;
 
         this._setupCanvas();
         bindInputEvents(() => this.state, (dir) => this.rotate(dir), () => {
@@ -71,8 +73,9 @@ class Game {
         this.timeLeft = LEVEL_TIME;
         this.lastTick = null;
         this.state    = 'PLAYING';
+        this.sessionCredits = 0;
         this.ui.hideAllOverlays();
-        this.ui.updateHUD({ gravityLabel: 'DOWN', rotations: 0, time: LEVEL_TIME, health: 100 });
+        this.ui.updateHUD({ gravityLabel: 'DOWN', rotations: 0, time: LEVEL_TIME, health: 100, credits: this.credits });
         document.getElementById('level-title').innerText = this.levelDef.name;
     }
 
@@ -132,6 +135,20 @@ class Game {
 
         this.particles = this.particles.filter(p => p.life > 0);
         this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vx *= 0.92; p.vy *= 0.92; p.life--; });
+
+        // Collectibles
+        this.level.collectibles = this.level.collectibles.filter(c => {
+            const dist = Math.hypot(this.pkg.x - c.x, this.pkg.y - c.y);
+            if (dist < 20) {
+                this.credits++;
+                this.sessionCredits++;
+                localStorage.setItem('gravity-courier-credits', this.credits);
+                this._spawnParticles(c.x, c.y, '#ffd700', 12);
+                this.ui.updateHUD({ credits: this.credits });
+                return false;
+            }
+            return true;
+        });
     }
 
     _spawnParticles(x, y, color, count = 8) {
@@ -163,10 +180,12 @@ class Game {
         if (this.state === 'MENU') return;
         this.renderer.drawBackground();
         this.renderer.drawDestination(this.level.destination);
+        this.renderer.drawCollectibles(this.level.collectibles);
         this.renderer.drawObstacles(this.level.obstacles);
         this.renderer.drawParticles(this.particles);
         this.renderer.drawPackageTrail(this.pkg.trail);
         this.renderer.drawPackage(this.pkg);
+        this.renderer.drawCompass(this.pkg, this.level.destination);
         this.renderer.drawGravityArrow();
     }
 
