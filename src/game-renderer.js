@@ -55,9 +55,9 @@ export class GameRenderer {
     drawObstacles(obstacles) {
         const ctx = this.ctx;
         obstacles.forEach(obs => {
-            const color = obs.color || (obs.type === 'hazard' ? '#ff2d55' : 'rgba(180, 200, 255, 0.4)');
+            const color = obs.color || (obs.type === 'hazard' ? '#ff2d55' : '#b4c8ff');
             ctx.save();
-            ctx.fillStyle   = `${color}${obs.type === 'wall' ? '14' : '40'}`; 
+                        ctx.fillStyle   = `${color}${obs.type === 'wall' ? '14' : '40'}`; 
             ctx.strokeStyle = color;
             ctx.lineWidth   = 1.5;
             
@@ -70,7 +70,8 @@ export class GameRenderer {
             if (obs.shape === 'circle') {
                 ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
             } else {
-                ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4);
+                if (ctx.roundRect) ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4);
+                else ctx.rect(obs.x, obs.y, obs.w, obs.h);
             }
             ctx.fill();
             ctx.stroke();

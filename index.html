@@ -73,6 +73,7 @@
                 </div>
 
                 <button class="btn btn-large" id="start-game-btn">DEPLOY SECTOR 01 →</button>
+                <button class="btn btn-large btn-secondary" id="editor-mode-btn" style="margin-top: 0.5rem;">LEVEL EDITOR</button>
             </div>
         </div>
 
@@ -109,6 +110,71 @@
                     <button class="btn" id="retry-btn">RETRY SECTOR</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Editor Overlay -->
+        <div id="editor-overlay" class="overlay">
+            <div id="editor-ui">
+                <div class="editor-header glass-panel">
+                    <div class="editor-title">SECTOR DESIGNER</div>
+                    <div class="editor-campaign-nav">
+                        <button class="btn-icon" id="editor-prev-level" title="Previous Sector">◂</button>
+                        <span id="editor-level-indicator">SECTOR 1/1</span>
+                        <button class="btn-icon" id="editor-next-level" title="Next Sector">▸</button>
+                        <button class="btn-icon btn-add" id="editor-add-level" title="Add New Sector">+</button>
+                        <button class="btn-icon btn-del" id="editor-del-level" title="Delete Sector">×</button>
+                    </div>
+                    <div class="editor-settings">
+                        <label>TIME</label>
+                        <input type="number" id="editor-time-input" value="60" min="20" max="999" title="Level Time (20-999s, use 999 for infinity)">
+                    </div>
+                    <div class="editor-controls">
+                        <button class="btn btn-small btn-secondary" id="editor-play-btn">PLAYTEST</button>
+                        <button class="btn btn-small" id="editor-save-btn">SAVE CAMPAIGN</button>
+                        <button class="btn btn-small btn-secondary" id="editor-exit-btn">EXIT</button>
+                    </div>
+                </div>
+                
+                <div class="editor-toolbox glass-panel">
+                    <div class="tool-group">
+                        <label>OBJECTS</label>
+                        <div class="tool-grid">
+                            <button class="tool-btn active" data-tool="wall" title="Wall (W)">W</button>
+                            <button class="tool-btn" data-tool="hazard" title="Hazard (H)">H</button>
+                            <button class="tool-btn" data-tool="slick" title="Slick">L</button>
+                            <button class="tool-btn" data-tool="bouncy" title="Bouncy">B</button>
+                            <button class="tool-btn" data-tool="sticky" title="Sticky">T</button>
+                            <button class="tool-btn" data-tool="repair" title="Repair">R</button>
+                            <button class="tool-btn" data-tool="shatter" title="Shatter">K</button>
+                            <button class="tool-btn" data-tool="accel" title="Accel">A</button>
+                            <button class="tool-btn" data-tool="collectible" title="Collectible (C)">C</button>
+                        </div>
+                    </div>
+                    <div class="tool-group">
+                        <label>POINTS</label>
+                        <div class="tool-grid">
+                            <button class="tool-btn" data-tool="spawn" title="Spawn (S)">S</button>
+                            <button class="tool-btn" data-tool="goal" title="Goal (G)">G</button>
+                        </div>
+                    </div>
+                    <div class="tool-group">
+                        <label>EDIT</label>
+                        <div class="tool-grid">
+                            <button class="tool-btn" data-tool="delete" title="Delete (Del)">×</button>
+                            <button class="tool-btn" data-tool="scale" title="Scale (R)">↔</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="editor-hint" class="glass-panel">
+                    Left Click: Place / Select | Drag: Move / Resize
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="notification-toast" class="glass-panel">
+            <span id="notification-msg"></span>
         </div>
 
     </div>

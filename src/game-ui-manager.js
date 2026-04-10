@@ -49,7 +49,7 @@ export class GameUIManager {
     }
 
     hideAllOverlays() {
-        ['menu-overlay', 'game-over-overlay', 'win-overlay'].forEach(id => {
+        ['menu-overlay', 'game-over-overlay', 'win-overlay', 'editor-overlay'].forEach(id => {
             this.showOverlay(id, false);
         });
     }
@@ -70,8 +70,24 @@ export class GameUIManager {
         this.showOverlay('game-over-overlay');
     }
 
-    initMenu(onStart) {
+    initMenu(onStart, onEditor) {
         document.getElementById('start-game-btn').onclick = () => onStart(1);
+        document.getElementById('editor-mode-btn').onclick = () => onEditor();
         this.showOverlay('menu-overlay');
+    }
+
+    showToast(msg, duration = 2500) {
+        const toast = document.getElementById('notification-toast');
+        const text  = document.getElementById('notification-msg');
+        if (!toast || !text) return;
+
+        if (this._toastTimeout) clearTimeout(this._toastTimeout);
+        
+        text.innerText = msg;
+        toast.classList.add('active');
+        
+        this._toastTimeout = setTimeout(() => {
+            toast.classList.remove('active');
+        }, duration);
     }
 }

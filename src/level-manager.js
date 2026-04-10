@@ -27,6 +27,10 @@ export class LevelManager {
     }
 
     getNextId(id) {
+        if (typeof id === 'string' && id.startsWith('custom-')) {
+            const index = parseInt(id.split('-')[1]);
+            return `custom-${index + 1}`;
+        }
         return id + 1; // Infinite progression
     }
 }
