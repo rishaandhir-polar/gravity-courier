@@ -128,6 +128,13 @@ export class EditorManager {
                 this._deleteSelected();
             }
         });
+
+        const headerBtn = document.getElementById('header-toggle');
+        const toolboxBtn = document.getElementById('toolbox-toggle');
+        const header = document.getElementById('editor-header');
+
+        headerBtn.onclick = () => header.classList.toggle('collapsed');
+        toolboxBtn.onclick = () => toolbox.classList.toggle('collapsed');
     }
 
     _updateUI() {

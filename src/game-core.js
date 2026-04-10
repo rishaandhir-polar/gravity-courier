@@ -63,15 +63,22 @@ export class Game {
                 await bindTiltEvents(() => this.state, (gx, gy) => this.gravity.setFreeVector(gx, gy));
                 this.loadLevel(id);
             },
-            () => { this.state = 'EDITOR'; this.ui.hideAllOverlays(); this.editor.start(); }
+            () => { 
+                this.state = 'EDITOR'; 
+                this.ui.hideAllOverlays(); 
+                this.ui.toggleHUD(false);
+                this.editor.start(); 
+            }
         );
         window.addEventListener('editor-playtest', (e) => {
             this.editor.stop();
+            this.ui.toggleHUD(true);
             this.loadLevel(e.detail.level);
         });
     }
 
     loadLevel(levelData) {
+        this.ui.toggleHUD(true);
         if (typeof levelData === 'number') {
             this.levelDef = this.levels.findLevel(levelData);
         } else if (typeof levelData === 'string' && (levelData.startsWith('custom-') || levelData === 'custom')) {

@@ -70,6 +70,11 @@ export class GameUIManager {
         this.showOverlay('game-over-overlay');
     }
 
+    toggleHUD(visible = true) {
+        const panel = document.getElementById('status-panel');
+        if (panel) panel.style.display = visible ? 'block' : 'none';
+    }
+
     initMenu(onStart, onEditor) {
         document.getElementById('start-game-btn').onclick = () => onStart(1);
         document.getElementById('editor-mode-btn').onclick = () => onEditor();

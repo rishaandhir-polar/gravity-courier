@@ -475,6 +475,8 @@ kbd {
 .btn:hover  { filter: brightness(1.15); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
+.btn-active { filter: brightness(1.2); border-color: var(--accent); }
+
 .btn-secondary {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.7);
@@ -482,6 +484,11 @@ kbd {
 }
 
 .btn-secondary:hover { background: rgba(255,255,255,0.14); filter: none; }
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+}
 
 /* ── Timer urgent state ──────────────────────────────────────────────────── */
 #timer-display.urgent {
@@ -531,10 +538,106 @@ kbd {
     left: 1.5rem;
     right: 1.5rem;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 1.5rem !important;
     pointer-events: all;
+    transition: all 0.3s cubic-bezier(0.17, 0.67, 0.45, 1.3);
+}
+
+.editor-header.collapsed .panel-collapsible-content {
+    display: none;
+}
+
+.panel-main-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.panel-collapse-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+}
+
+.collapsed .panel-collapse-btn { transform: rotate(-90deg); }
+
+.panel-collapsible-content {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.editor-toolbox {
+    position: absolute;
+    left: 1.5rem;
+    top: 6.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0.8rem !important;
+    pointer-events: all;
+    transition: all 0.3s cubic-bezier(0.17, 0.67, 0.45, 1.3);
+}
+
+.editor-toolbox.collapsed {
+    background: rgba(0,0,0,0.4);
+}
+
+.editor-toolbox.collapsed .panel-collapsible-content-side {
+    display: none;
+}
+
+.panel-collapse-btn-side {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+    transition: transform 0.3s;
+}
+
+.collapsed .panel-collapse-btn-side { transform: rotate(180deg); }
+
+.panel-collapsible-content-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .editor-header {
+        top: 0.5rem;
+        left: 0.5rem;
+        right: 0.5rem;
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.8rem;
+    }
+    .panel-collapsible-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .editor-toolbox {
+        top: 4rem;
+        left: 0.5rem;
+        padding: 0.4rem !important;
+    }
+    .tool-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .btn-small {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+    #editor-hint {
+        display: none;
+    }
 }
 
 .editor-campaign-nav {
