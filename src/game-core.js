@@ -74,15 +74,16 @@ export class Game {
     loadLevel(levelData) {
         if (typeof levelData === 'number') {
             this.levelDef = this.levels.findLevel(levelData);
-        } else if (typeof levelData === 'string' && levelData.startsWith('custom-')) {
-            const index = parseInt(levelData.split('-')[1]);
+        } else if (typeof levelData === 'string' && (levelData.startsWith('custom-') || levelData === 'custom')) {
+            const indexStr = levelData.split('-')[1] || '0';
+            const index = parseInt(indexStr);
             const def = this.editor.getCampaignLevel(index);
             if (def) {
                 this.levelDef = def;
             } else {
                 this.state = 'MENU';
                 this.ui.showOverlay('menu-overlay');
-                this.ui.showToast('CAMPAIGN COMPLETE');
+                this.ui.showToast('CAMPAIGN SEQUENCE COMPLETE');
                 return;
             }
         } else {

@@ -131,6 +131,14 @@ export class EditorManager {
     }
 
     _updateUI() {
+        // Re-index campaign IDs to ensure sequential progression works
+        this.campaign.forEach((lvl, i) => {
+            lvl.id = `custom-${i}`;
+            if (lvl.name.includes('CUSTOM SECTOR')) {
+                lvl.name = `CUSTOM SECTOR ${i + 1}`;
+            }
+        });
+
         document.getElementById('editor-level-indicator').innerText = `SECTOR ${this.currentIndex + 1}/${this.campaign.length}`;
         document.getElementById('editor-time-input').value = this.level.time || 60;
         this.selectedObject = null;
