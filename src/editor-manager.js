@@ -151,7 +151,11 @@ export class EditorManager {
     _findTarget(fx, fy) {
         // Search obstacles
         for (let o of this.level.obstacles) {
-            if (fx >= o.fx && fx <= o.fx + o.fw && fy >= o.fy && fy <= o.fy + o.fh) return { type: 'obstacle', data: o };
+            if (o.shape === 'circle') {
+                if (Math.hypot(fx - o.fx, fy - o.fy) < (o.fr || 0.05)) return { type: 'obstacle', data: o };
+            } else {
+                if (fx >= o.fx && fx <= o.fx + (o.fw || 0.1) && fy >= o.fy && fy <= o.fy + (o.fh || 0.1)) return { type: 'obstacle', data: o };
+            }
         }
         // Search goal
         const d = this.level.destination;
@@ -186,12 +190,28 @@ export class EditorManager {
                 this._deleteSelected();
                 return;
             }
+            if (this.currentTool === 'shape' && target.type === 'obstacle') {
+                const o = target.data;
+                if (o.shape === 'circle') {
+                    o.shape = 'rect';
+                    o.fw = (o.fr || 0.05) * 2;
+                    o.fh = (o.fr || 0.05) * 2;
+                    o.fx -= o.fr || 0.05;
+                    o.fy -= o.fr || 0.05;
+                } else {
+                    o.shape = 'circle';
+                    o.fr = (o.fw || 0.1) / 2;
+                    o.fx += (o.fw || 0.1) / 2;
+                    o.fy += (o.fh || 0.1) / 2;
+                }
+                return;
+            }
             this.isDragging = true;
             this.dragStart = { fx, fy, ox: target.data.fx, oy: target.data.fy };
             return;
         }
 
-        if (this.currentTool === 'delete' || this.currentTool === 'scale') {
+        if (this.currentTool === 'delete' || this.currentTool === 'scale' || this.currentTool === 'shape') {
             this.selectedObject = null;
             return;
         }
@@ -235,21 +255,26 @@ export class EditorManager {
 
         if (this.currentTool === 'scale' && (this.selectedObject.type === 'obstacle' || this.selectedObject.type === 'goal')) {
             const data = this.selectedObject.data;
-            const centerX = data.fx + (data.fw || 0.1) / 2;
-            const centerY = data.fy + (data.fh || 0.1) / 2;
+            
+            if (data.shape === 'circle') {
+                data.fr = Math.max(0.01, (data.fr || 0.05) + dx);
+            } else {
+                const centerX = data.fx + (data.fw || 0.1) / 2;
+                const centerY = data.fy + (data.fh || 0.1) / 2;
 
-            if (this.dragStart.fx < centerX) { // Left side handle
-                data.fx = Math.min(centerX - 0.01, data.fx + dx);
-                data.fw = Math.max(0.02, (data.fw || 0.1) - dx);
-            } else { // Right side handle
-                data.fw = Math.max(0.02, (data.fw || 0.1) + dx);
-            }
+                if (this.dragStart.fx < centerX) { // Left side handle
+                    data.fx = Math.min(centerX - 0.01, data.fx + dx);
+                    data.fw = Math.max(0.02, (data.fw || 0.1) - dx);
+                } else { // Right side handle
+                    data.fw = Math.max(0.02, (data.fw || 0.1) + dx);
+                }
 
-            if (this.dragStart.fy < centerY) { // Top handle
-                data.fy = Math.min(centerY - 0.01, data.fy + dy);
-                data.fh = Math.max(0.02, (data.fh || 0.1) - dy);
-            } else { // Bottom handle
-                data.fh = Math.max(0.02, (data.fh || 0.1) + dy);
+                if (this.dragStart.fy < centerY) { // Top handle
+                    data.fy = Math.min(centerY - 0.01, data.fy + dy);
+                    data.fh = Math.max(0.02, (data.fh || 0.1) - dy);
+                } else { // Bottom handle
+                    data.fh = Math.max(0.02, (data.fh || 0.1) + dy);
+                }
             }
 
             this.dragStart.fx = fx;
@@ -283,7 +308,12 @@ export class EditorManager {
             if (this.selectedObject.type === 'collectible') {
                 this.renderer.drawSelection({ x: data.fx * W - 10, y: data.fy * H - 10, w: 20, h: 20 });
             } else {
-                this.renderer.drawSelection({ x: data.fx * W, y: data.fy * H, w: data.fw * W, h: data.fh * H });
+                if (data.shape === 'circle') {
+                    const r = (data.fr || 0.05) * W;
+                    this.renderer.drawSelection({ x: data.fx * W - r, y: data.fy * H - r, w: r * 2, h: r * 2 });
+                } else {
+                    this.renderer.drawSelection({ x: data.fx * W, y: data.fy * H, w: data.fw * W, h: data.fh * H });
+                }
             }
         }
     }
@@ -298,7 +328,8 @@ export class EditorManager {
             obstacles: this.level.obstacles.map(o => ({
                 ...o,
                 x: o.fx * W, y: o.fy * H,
-                w: (o.fw || 0) * W, h: (o.fh || 0) * H
+                w: (o.fw || 0) * W, h: (o.fh || 0) * H,
+                radius: (o.fr || 0) * W
             })),
             collectibles: this.level.collectibles.map(c => ({
                 x: c.fx * W, y: c.fy * H
