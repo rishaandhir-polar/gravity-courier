@@ -697,13 +697,25 @@ kbd {
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-.editor-campaign-nav span {
+#editor-level-name {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 242, 255, 0.3);
+    color: var(--accent);
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.1rem;
     min-width: 90px;
     text-align: center;
-    color: var(--accent);
+    font-family: inherit;
+    text-transform: uppercase;
+    outline: none;
+    transition: all 0.2s;
+}
+
+#editor-level-name:focus {
+    border-bottom-color: var(--accent);
+    background: rgba(255,255,255,0.05);
 }
 
 .btn-icon {

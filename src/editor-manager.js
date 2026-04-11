@@ -129,6 +129,9 @@ export class EditorManager {
             }
         });
 
+        const nameInput = document.getElementById('editor-level-name');
+        nameInput.oninput = () => { this.level.name = nameInput.value; };
+
         const headerBtn = document.getElementById('header-toggle');
         const toolboxBtn = document.getElementById('toolbox-toggle');
         const header = document.getElementById('editor-header');
@@ -138,15 +141,12 @@ export class EditorManager {
     }
 
     _updateUI() {
-        // Re-index campaign IDs to ensure sequential progression works
+        // Re-index campaign IDs 
         this.campaign.forEach((lvl, i) => {
             lvl.id = `custom-${i}`;
-            if (lvl.name.includes('CUSTOM SECTOR')) {
-                lvl.name = `CUSTOM SECTOR ${i + 1}`;
-            }
         });
 
-        document.getElementById('editor-level-indicator').innerText = `SECTOR ${this.currentIndex + 1}/${this.campaign.length}`;
+        document.getElementById('editor-level-name').value = this.level.name || `CUSTOM SECTOR ${this.currentIndex + 1}`;
         document.getElementById('editor-time-input').value = this.level.time || 60;
         this.selectedObject = null;
     }
@@ -213,12 +213,20 @@ export class EditorManager {
                 }
                 return;
             }
+            if (this.currentTool === 'rotate' && target.type === 'obstacle') {
+                const o = target.data;
+                this.isDragging = true;
+                const cx = o.fx + (o.fw || 0.1) / 2;
+                const cy = o.fy + (o.fh || 0.1) / 2;
+                this.dragStart = { fx, fy, ox: o.fx, oy: o.fy, startAngle: o.angle || 0, cx, cy };
+                return;
+            }
             this.isDragging = true;
             this.dragStart = { fx, fy, ox: target.data.fx, oy: target.data.fy };
             return;
         }
 
-        if (this.currentTool === 'delete' || this.currentTool === 'scale' || this.currentTool === 'shape') {
+        if (this.currentTool === 'delete' || this.currentTool === 'scale' || this.currentTool === 'shape' || this.currentTool === 'rotate') {
             this.selectedObject = null;
             return;
         }
@@ -286,6 +294,11 @@ export class EditorManager {
 
             this.dragStart.fx = fx;
             this.dragStart.fy = fy;
+        } else if (this.currentTool === 'rotate' && this.selectedObject.type === 'obstacle') {
+            const data = this.selectedObject.data;
+            const currentAngle = Math.atan2(fy - this.dragStart.cy, fx - this.dragStart.cx);
+            const initialAngle = Math.atan2(this.dragStart.fy - this.dragStart.cy, this.dragStart.fx - this.dragStart.cx);
+            data.angle = this.dragStart.startAngle + (currentAngle - initialAngle);
         } else {
             this.selectedObject.data.fx = this.dragStart.ox + dx;
             this.selectedObject.data.fy = this.dragStart.oy + dy;
@@ -313,13 +326,17 @@ export class EditorManager {
         if (this.selectedObject) {
             let data = this.selectedObject.data;
             if (this.selectedObject.type === 'collectible') {
-                this.renderer.drawSelection({ x: data.fx * W - 10, y: data.fy * H - 10, w: 20, h: 20 });
+                this.renderer.drawSelection({ x: data.fx * W, y: data.fy * H, w: 0, h: 0 }); // Collectibles are points
             } else {
                 if (data.shape === 'circle') {
                     const r = (data.fr || 0.05) * W;
                     this.renderer.drawSelection({ x: data.fx * W - r, y: data.fy * H - r, w: r * 2, h: r * 2 });
                 } else {
-                    this.renderer.drawSelection({ x: data.fx * W, y: data.fy * H, w: data.fw * W, h: data.fh * H });
+                    this.renderer.drawSelection({ 
+                        x: data.fx * W, y: data.fy * H, 
+                        w: (data.fw || 0.1) * W, h: (data.fh || 0.1) * H,
+                        angle: data.angle 
+                    });
                 }
             }
         }
@@ -336,7 +353,8 @@ export class EditorManager {
                 ...o,
                 x: o.fx * W, y: o.fy * H,
                 w: (o.fw || 0) * W, h: (o.fh || 0) * H,
-                radius: (o.fr || 0) * W
+                radius: (o.fr || 0) * W,
+                angle: o.angle || 0
             })),
             collectibles: this.level.collectibles.map(c => ({
                 x: c.fx * W, y: c.fy * H

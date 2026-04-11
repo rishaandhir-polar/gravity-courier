@@ -70,8 +70,15 @@ export class GameRenderer {
             if (obs.shape === 'circle') {
                 ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
             } else {
-                if (ctx.roundRect) ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4);
-                else ctx.rect(obs.x, obs.y, obs.w, obs.h);
+                if (obs.angle) {
+                    ctx.translate(obs.x + obs.w / 2, obs.y + obs.h / 2);
+                    ctx.rotate(obs.angle);
+                    if (ctx.roundRect) ctx.roundRect(-obs.w / 2, -obs.h / 2, obs.w, obs.h, 4);
+                    else ctx.rect(-obs.w / 2, -obs.h / 2, obs.w, obs.h);
+                } else {
+                    if (ctx.roundRect) ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4);
+                    else ctx.rect(obs.x, obs.y, obs.w, obs.h);
+                }
             }
             ctx.fill();
             ctx.stroke();
@@ -81,7 +88,9 @@ export class GameRenderer {
                 const maxW    = (obs.shape === 'circle' ? obs.radius * 1.6 : obs.w * 0.85);
                 ctx.font      = `bold ${Math.min(8, 8 * (maxW / Math.max(1, ctx.measureText(label).width)))}px Inter, sans-serif`;
                 ctx.textAlign = 'center';
-                ctx.fillText(label, obs.shape === 'circle' ? obs.x : obs.x + obs.w / 2, obs.shape === 'circle' ? obs.y + 3 : obs.y + obs.h / 2 + 3);
+                const lx = obs.shape === 'circle' ? obs.x : (obs.angle ? 0 : obs.x + obs.w / 2);
+                const ly = obs.shape === 'circle' ? obs.y + 3 : (obs.angle ? 3 : obs.y + obs.h / 2 + 3);
+                ctx.fillText(label, lx, ly);
             }
             ctx.restore();
         });

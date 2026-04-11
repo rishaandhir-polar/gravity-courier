@@ -101,28 +101,56 @@ export class PhysicsCore {
                     return { hit: true, obstacle: obs, type: obs.type, speed: this.getSpeed(entity) };
                 }
             } else {
-                // Default to Rect
-                closestX = Math.max(obs.x, Math.min(entity.x, obs.x + obs.w));
-                closestY = Math.max(obs.y, Math.min(entity.y, obs.y + obs.h));
-                const dx = entity.x - closestX;
-                const dy = entity.y - closestY;
-                distSq = dx * dx + dy * dy;
+                // Default to Rect (support rotation via angle)
+                const angle = obs.angle || 0;
+                let dx = entity.x - (obs.x + obs.w / 2);
+                let dy = entity.y - (obs.y + obs.h / 2);
+
+                if (angle !== 0) {
+                    const cos = Math.cos(-angle);
+                    const sin = Math.sin(-angle);
+                    const rx = dx * cos - dy * sin;
+                    const ry = dx * sin + dy * cos;
+                    dx = rx; dy = ry;
+                }
+
+                const closestX = Math.max(-obs.w / 2, Math.min(dx, obs.w / 2));
+                const closestY = Math.max(-obs.h / 2, Math.min(dy, obs.h / 2));
+                const ldx = dx - closestX;
+                const ldy = dy - closestY;
+                distSq = ldx * ldx + ldy * ldy;
 
                 if (distSq < r * r) {
+                    let lnx, lny;
                     if (distSq === 0) {
-                        const overlapL = entity.x - obs.x; const overlapR = (obs.x + obs.w) - entity.x;
-                        const overlapT = entity.y - obs.y; const overlapB = (obs.y + obs.h) - entity.y;
+                        const overlapL = dx + obs.w / 2; const overlapR = obs.w / 2 - dx;
+                        const overlapT = dy + obs.h / 2; const overlapB = obs.h / 2 - dy;
                         const minOverlap = Math.min(overlapL, overlapR, overlapT, overlapB);
-                        if (minOverlap === overlapL)      { nx = -1; ny = 0; entity.x = obs.x - r; }
-                        else if (minOverlap === overlapR) { nx =  1; ny = 0; entity.x = obs.x + obs.w + r; }
-                        else if (minOverlap === overlapT) { nx = 0; ny = -1; entity.y = obs.y - r; }
-                        else                              { nx = 0; ny =  1; entity.y = obs.y + obs.h + r; }
+                        if (minOverlap === overlapL)      { lnx = -1; lny = 0; dx = -obs.w / 2 - r; }
+                        else if (minOverlap === overlapR) { lnx =  1; lny = 0; dx =  obs.w / 2 + r; }
+                        else if (minOverlap === overlapT) { lnx = 0; lny = -1; dy = -obs.h / 2 - r; }
+                        else                              { lnx = 0; lny =  1; dy =  obs.h / 2 + r; }
                     } else {
                         const d = Math.sqrt(distSq);
-                        nx = dx / d; ny = dy / d;
-                        entity.x = closestX + nx * r;
-                        entity.y = closestY + ny * r;
+                        lnx = ldx / d; lny = ldy / d;
+                        dx = closestX + lnx * r;
+                        dy = closestY + lny * r;
                     }
+
+                    // Rotate normal back
+                    if (angle !== 0) {
+                        const cos = Math.cos(angle);
+                        const sin = Math.sin(angle);
+                        nx = lnx * cos - lny * sin;
+                        ny = lnx * sin + lny * cos;
+                        entity.x = (obs.x + obs.w / 2) + (dx * cos - dy * sin);
+                        entity.y = (obs.y + obs.h / 2) + (dx * sin + dy * cos);
+                    } else {
+                        nx = lnx; ny = lny;
+                        entity.x = (obs.x + obs.w / 2) + dx;
+                        entity.y = (obs.y + obs.h / 2) + dy;
+                    }
+
                     this._resolveCollision(entity, obs, nx, ny);
                     return { hit: true, obstacle: obs, type: obs.type, speed: this.getSpeed(entity) };
                 }

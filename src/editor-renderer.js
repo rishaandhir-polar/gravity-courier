@@ -44,10 +44,20 @@ export class EditorRenderer {
 
     drawSelection(obj) {
         if (!obj) return;
+        this.ctx.save();
         this.ctx.strokeStyle = '#fff';
         this.ctx.lineWidth = 2;
         this.ctx.setLineDash([5, 5]);
-        this.ctx.strokeRect(obj.x - 2, obj.y - 2, obj.w + 4, obj.h + 4);
+        
+        if (obj.angle) {
+            this.ctx.translate(obj.x + obj.w / 2, obj.y + obj.h / 2);
+            this.ctx.rotate(obj.angle);
+            this.ctx.strokeRect(-obj.w / 2 - 2, -obj.h / 2 - 2, obj.w + 4, obj.h + 4);
+        } else {
+            this.ctx.strokeRect(obj.x - 2, obj.y - 2, obj.w + 4, obj.h + 4);
+        }
+        
         this.ctx.setLineDash([]);
+        this.ctx.restore();
     }
 }
