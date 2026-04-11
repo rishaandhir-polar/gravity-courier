@@ -129,6 +129,27 @@ export class EditorManager {
             }
         });
 
+        // Mobile Touch Support
+        const handleTouch = (e, callback) => {
+            if (e.touches && e.touches.length > 0) {
+                const touch = e.touches[0];
+                const rect = this.canvas.getBoundingClientRect();
+                // Create a simulated event object that matches the structure I use in _onMouseDown
+                const simulatedEvent = {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    preventDefault: () => e.preventDefault()
+                };
+                callback(simulatedEvent);
+                e.preventDefault();
+            }
+        };
+
+        this.canvas.addEventListener('touchstart', (e) => handleTouch(e, (me) => this._onMouseDown(me)), { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => handleTouch(e, (me) => this._onMouseMove(me)), { passive: false });
+        this.canvas.addEventListener('touchend', (e) => { this._onMouseUp(e); e.preventDefault(); }, { passive: false });
+        this.canvas.oncontextmenu = (e) => e.preventDefault();
+
         const nameInput = document.getElementById('editor-level-name');
         nameInput.oninput = () => { this.level.name = nameInput.value; };
 
