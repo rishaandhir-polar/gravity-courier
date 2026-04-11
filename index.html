@@ -115,63 +115,65 @@
         <!-- Editor Overlay -->
         <div id="editor-overlay" class="overlay">
             <div id="editor-ui">
-                <div class="editor-header glass-panel" id="editor-header">
-                    <div class="panel-main-row">
-                        <div class="editor-title">SECTOR DESIGNER</div>
-                        <button class="panel-collapse-btn" id="header-toggle">▿</button>
-                    </div>
-                    <div class="panel-collapsible-content">
-                        <div class="editor-campaign-nav">
-                            <button class="btn-icon" id="editor-prev-level">◂</button>
-                            <span id="editor-level-indicator">SECTOR 1/1</span>
-                            <button class="btn-icon" id="editor-next-level">▸</button>
-                            <button class="btn-icon btn-add" id="editor-add-level">+</button>
-                            <button class="btn-icon btn-del" id="editor-del-level">×</button>
+                <div id="editor-sidebar">
+                    <div class="editor-header glass-panel" id="editor-header">
+                        <div class="panel-main-row">
+                            <div class="editor-title">SECTOR DESIGNER</div>
+                            <button class="panel-collapse-btn" id="header-toggle">▿</button>
                         </div>
-                        <div class="editor-settings">
-                            <label>TIME</label>
-                            <input type="number" id="editor-time-input" value="60" min="20" max="999">
-                        </div>
-                        <div class="editor-controls">
-                            <button class="btn btn-small btn-secondary" id="editor-play-btn">PLAY</button>
-                            <button class="btn btn-small" id="editor-save-btn">SAVE</button>
-                            <button class="btn btn-small btn-secondary" id="editor-exit-btn">EXIT</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="editor-toolbox glass-panel" id="editor-toolbox">
-                    <button class="panel-collapse-btn-side" id="toolbox-toggle">◂</button>
-                    <div class="panel-collapsible-content-side">
-                    <div class="tool-group">
-                        <label>OBJECTS</label>
-                        <div class="tool-grid">
-                            <button class="tool-btn active" data-tool="wall" title="Wall (W)">W</button>
-                            <button class="tool-btn" data-tool="hazard" title="Hazard (H)">H</button>
-                            <button class="tool-btn" data-tool="slick" title="Slick">L</button>
-                            <button class="tool-btn" data-tool="bouncy" title="Bouncy">B</button>
-                            <button class="tool-btn" data-tool="sticky" title="Sticky">T</button>
-                            <button class="tool-btn" data-tool="repair" title="Repair">R</button>
-                            <button class="tool-btn" data-tool="shatter" title="Shatter">K</button>
-                            <button class="tool-btn" data-tool="accel" title="Accel">A</button>
-                            <button class="tool-btn" data-tool="collectible" title="Collectible (C)">C</button>
+                        <div class="panel-collapsible-content">
+                            <div class="editor-campaign-nav">
+                                <button class="btn-icon" id="editor-prev-level">◂</button>
+                                <span id="editor-level-indicator">SECTOR 1/1</span>
+                                <button class="btn-icon" id="editor-next-level">▸</button>
+                                <button class="btn-icon btn-add" id="editor-add-level">+</button>
+                                <button class="btn-icon btn-del" id="editor-del-level">×</button>
+                            </div>
+                            <div class="editor-settings">
+                                <label>TIME</label>
+                                <input type="number" id="editor-time-input" value="60" min="20" max="999">
+                            </div>
+                            <div class="editor-controls">
+                                <button class="btn btn-small btn-secondary" id="editor-play-btn">PLAY</button>
+                                <button class="btn btn-small" id="editor-save-btn">SAVE</button>
+                                <button class="btn btn-small btn-secondary" id="editor-exit-btn">EXIT</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="tool-group">
-                        <label>POINTS</label>
-                        <div class="tool-grid">
-                            <button class="tool-btn" data-tool="spawn" title="Spawn (S)">S</button>
-                            <button class="tool-btn" data-tool="goal" title="Goal (G)">G</button>
+                    
+                    <div class="editor-toolbox glass-panel" id="editor-toolbox">
+                        <button class="panel-collapse-btn-side" id="toolbox-toggle">◂</button>
+                        <div class="panel-collapsible-content-side">
+                            <div class="tool-group">
+                                <label>OBJECTS</label>
+                                <div class="tool-grid">
+                                    <button class="tool-btn active" data-tool="wall" title="Wall (W)">W</button>
+                                    <button class="tool-btn" data-tool="hazard" title="Hazard (H)">H</button>
+                                    <button class="tool-btn" data-tool="slick" title="Slick">L</button>
+                                    <button class="tool-btn" data-tool="bouncy" title="Bouncy">B</button>
+                                    <button class="tool-btn" data-tool="sticky" title="Sticky">T</button>
+                                    <button class="tool-btn" data-tool="repair" title="Repair">R</button>
+                                    <button class="tool-btn" data-tool="shatter" title="Shatter">K</button>
+                                    <button class="tool-btn" data-tool="accel" title="Accel">A</button>
+                                    <button class="tool-btn" data-tool="collectible" title="Collectible (C)">C</button>
+                                </div>
+                            </div>
+                            <div class="tool-group">
+                                <label>POINTS</label>
+                                <div class="tool-grid">
+                                    <button class="tool-btn" data-tool="spawn" title="Spawn (S)">S</button>
+                                    <button class="tool-btn" data-tool="goal" title="Goal (G)">G</button>
+                                </div>
+                            </div>
+                            <div class="tool-group">
+                                <label>EDIT</label>
+                                <div class="tool-grid">
+                                    <button class="tool-btn" data-tool="delete" title="Delete (Del)">×</button>
+                                    <button class="tool-btn" data-tool="scale" title="Scale (R)">↔</button>
+                                    <button class="tool-btn" data-tool="shape" title="Toggle Shape">○</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tool-group">
-                        <label>EDIT</label>
-                        <div class="tool-grid">
-                            <button class="tool-btn" data-tool="delete" title="Delete (Del)">×</button>
-                            <button class="tool-btn" data-tool="scale" title="Scale (R)">↔</button>
-                            <button class="tool-btn" data-tool="shape" title="Toggle Shape">○</button>
-                        </div>
-                    </div>
                     </div>
                 </div>
 
