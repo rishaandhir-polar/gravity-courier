@@ -613,27 +613,54 @@ kbd {
 
 @media (max-width: 768px) {
     .editor-header {
-        top: 0.5rem;
-        left: 0.5rem;
-        right: 0.5rem;
-        padding: 0.5rem 0.8rem !important;
-        font-size: 0.8rem;
+        top: 0.2rem;
+        left: 0.2rem;
+        right: 0.2rem;
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem;
+    }
+    .panel-main-row {
+        gap: 0.5rem;
     }
     .panel-collapsible-content {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 0.6rem;
+        margin-top: 0.4rem;
+    }
+    .editor-campaign-nav {
+        gap: 0.3rem;
+        padding: 0.2rem 0.4rem;
+        justify-content: space-between;
+    }
+    .editor-campaign-nav span {
+        min-width: 65px;
+        font-size: 0.6rem;
+    }
+    .editor-settings label {
+        display: none;
+    }
+    .editor-settings input {
+        width: 50px;
+        background: rgba(255,255,255,0.1);
     }
     .editor-toolbox {
-        top: 4rem;
-        left: 0.5rem;
-        padding: 0.4rem !important;
+        top: 3.5rem;
+        left: 0.2rem;
+        padding: 0.3rem !important;
     }
     .tool-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+    }
+    .tool-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.65rem;
     }
     .btn-small {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
     }
     #editor-hint {
         display: none;
