@@ -80,5 +80,6 @@ export class GravityManager {
      */
     reset() {
         this.angle = 0;
+        this.useFreeVector = false;
     }
 }
