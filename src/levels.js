@@ -106,6 +106,20 @@ export const LEVELS = [
             { fx: 0.85, fy: 0.35, type: 'credit' },
             { fx: 0.5, fy: 0.6,   type: 'credit' }
         ]
+    },
+    {
+        id: 100,
+        name: "SECTOR 100 — THE VOID",
+        description: "A glitch in the system. The destination is drifting.",
+        packageStart: { fx: 0.5, fy: 0.8 },
+        destination: { fx: 0.5, fy: 0.2, fw: 0.04, fh: 0.04 },
+        obstacles: [],
+        collectibles: [
+            { fx: 0.1, fy: 0.1, type: 'credit' },
+            { fx: 0.9, fy: 0.1, type: 'credit' },
+            { fx: 0.5, fy: 0.5, type: 'credit' }
+        ],
+        time: 20
     }
 ];
 
