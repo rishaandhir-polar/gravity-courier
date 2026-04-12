@@ -33,6 +33,7 @@ export function updateGame(game, now) {
     // Goal check
     const { x, y, w, h } = game.level.destination;
     if (game.pkg.x > x && game.pkg.x < x + w && game.pkg.y > y && game.pkg.y < y + h) {
+        spawnParticles(game, game.pkg.x, game.pkg.y, '#00f2ff', 48); // Victory burst
         return game._win();
     }
 

@@ -698,24 +698,28 @@ kbd {
 }
 
 #editor-level-name {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(0, 242, 255, 0.3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 242, 255, 0.1);
+    border-radius: 4px;
     color: var(--accent);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
-    letter-spacing: 0.1rem;
-    min-width: 90px;
+    letter-spacing: 0.12rem;
+    min-width: 120px;
+    padding: 4px 8px;
     text-align: center;
     font-family: inherit;
     text-transform: uppercase;
     outline: none;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);
 }
 
 #editor-level-name:focus {
-    border-bottom-color: var(--accent);
-    background: rgba(255,255,255,0.05);
+    background: rgba(0, 242, 255, 0.08);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.2), inset 0 0 8px rgba(0, 242, 255, 0.1);
+    text-shadow: 0 0 8px var(--accent);
 }
 
 .btn-icon {

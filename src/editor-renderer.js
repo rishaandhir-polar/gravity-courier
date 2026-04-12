@@ -44,20 +44,62 @@ export class EditorRenderer {
 
     drawSelection(obj) {
         if (!obj) return;
-        this.ctx.save();
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 2;
-        this.ctx.setLineDash([5, 5]);
+        const ctx = this.ctx;
+        const time = Date.now() / 1000;
+        const pulse = 0.6 + 0.4 * Math.sin(time * 4);
+        const color = `rgba(0, 242, 255, ${pulse})`;
+
+        ctx.save();
         
+        // Setup transform for rotated objects
         if (obj.angle) {
-            this.ctx.translate(obj.x + obj.w / 2, obj.y + obj.h / 2);
-            this.ctx.rotate(obj.angle);
-            this.ctx.strokeRect(-obj.w / 2 - 2, -obj.h / 2 - 2, obj.w + 4, obj.h + 4);
+            ctx.translate(obj.x + obj.w / 2, obj.y + obj.h / 2);
+            ctx.rotate(obj.angle);
+            ctx.translate(-obj.w / 2, -obj.h / 2);
         } else {
-            this.ctx.strokeRect(obj.x - 2, obj.y - 2, obj.w + 4, obj.h + 4);
+            ctx.translate(obj.x, obj.y);
         }
+
+        const W = obj.w || 0;
+        const H = obj.h || 0;
+        const pad = 4;
+
+        // 1. Draw "Holographic" fill (Scanlines)
+        if (W > 0 && H > 0) {
+            ctx.fillStyle = 'rgba(0, 242, 255, 0.05)';
+            ctx.fillRect(-pad, -pad, W + pad * 2, H + pad * 2);
+            
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < H + pad * 2; i += 4) {
+                ctx.beginPath();
+                ctx.moveTo(-pad, i - pad);
+                ctx.lineTo(W + pad, i - pad);
+                ctx.stroke();
+            }
+        }
+
+        // 2. Draw Glow Outer Border
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 5]);
+        ctx.strokeRect(-pad, -pad, W + pad * 2, H + pad * 2);
+        ctx.setLineDash([]);
+
+        // 3. Draw Corner Brackets
+        ctx.strokeStyle = '#00f2ff';
+        ctx.lineWidth = 2;
+        const bl = 8; // bracket length
         
-        this.ctx.setLineDash([]);
-        this.ctx.restore();
+        // Top Left
+        ctx.beginPath(); ctx.moveTo(-pad, -pad + bl); ctx.lineTo(-pad, -pad); ctx.lineTo(-pad + bl, -pad); ctx.stroke();
+        // Top Right
+        ctx.beginPath(); ctx.moveTo(W + pad - bl, -pad); ctx.lineTo(W + pad, -pad); ctx.lineTo(W + pad, -pad + bl); ctx.stroke();
+        // Bottom Right
+        ctx.beginPath(); ctx.moveTo(W + pad, H + pad - bl); ctx.lineTo(W + pad, H + pad); ctx.lineTo(W + pad - bl, H + pad); ctx.stroke();
+        // Bottom Left
+        ctx.beginPath(); ctx.moveTo(-pad + bl, H + pad); ctx.lineTo(-pad, H + pad); ctx.lineTo(-pad, H + pad - bl); ctx.stroke();
+
+        ctx.restore();
     }
 }
