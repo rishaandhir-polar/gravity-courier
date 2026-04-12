@@ -19,17 +19,27 @@ export function bindInputEvents(getState, onRotate, onAction) {
     });
 }
 
+let tiltBound = false;
+let permissionGranted = false;
+
 export async function bindTiltEvents(getState, onRotate) {
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function' && !permissionGranted) {
         try {
             const permission = await DeviceOrientationEvent.requestPermission();
-            if (permission !== 'granted') return;
+            permissionGranted = (permission === 'granted');
+            if (!permissionGranted) return;
         } catch (e) { return; }
+    } else {
+        permissionGranted = true;
     }
+
+    if (tiltBound) return;
+    tiltBound = true;
 
     const DEG_TO_RAD = Math.PI / 180;
     window.addEventListener('deviceorientation', (e) => {
-        if (getState() !== 'PLAYING') return;
+        const state = getState();
+        if (state !== 'PLAYING') return;
 
         // In Portrait: gamma is X-tilt, beta is Y-tilt
         // In Landscape: beta is X-tilt, gamma is Y-tilt

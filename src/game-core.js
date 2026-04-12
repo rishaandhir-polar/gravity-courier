@@ -70,9 +70,10 @@ export class Game {
                 this.editor.start(); 
             }
         );
-        window.addEventListener('editor-playtest', (e) => {
+        window.addEventListener('editor-playtest', async (e) => {
             this.editor.stop();
             this.ui.toggleHUD(true);
+            await bindTiltEvents(() => this.state, (gx, gy) => this.gravity.setFreeVector(gx, gy));
             this.loadLevel(e.detail.level);
         });
     }
